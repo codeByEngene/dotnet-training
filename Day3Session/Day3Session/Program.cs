@@ -1,4 +1,4 @@
-﻿//Control Flow
+﻿//************************************ Control Flow ************************************//
 /*
 1. if else
 2. switch case
@@ -6,7 +6,7 @@
 4. break and continue
 */
 
-//If else statement
+//************************************ If Else Syntax ************************************//
 /*
     if(condition)
     {
@@ -22,7 +22,8 @@
     }
 */
 
-//If Else Example
+
+//************************************ If Else Example ************************************//
 /*
 Console.WriteLine("Enter the color of the traffic light:");
 string trafficLight = Console.ReadLine().ToUpper(); // Convert input to uppercase for case-insensitive comparison
@@ -48,7 +49,7 @@ else
 */
 
 
-//Switch case statement
+//************************************ Switch case statement ************************************//
 /*
     switch(expression)
     {
@@ -64,7 +65,8 @@ else
     }
 */
 
-// Switch Case Example
+
+//************************************ Switch Case Example ************************************//
 /*
 string dayName;
 Console.WriteLine("Enter a number between 1 and 7 to get the corresponding day of the week:");
@@ -99,7 +101,8 @@ switch(dayOfWeek)
 Console.WriteLine($"The day is {dayName}"); 
 */
 
-//Loops
+
+//************************************ Loops ************************************//
 /*
 1. For loop
 2. While loop
@@ -107,7 +110,8 @@ Console.WriteLine($"The day is {dayName}");
 4. Foreach loop
 */
 
-//For loop
+
+//************************************ For Loop Syntax ************************************//
 /*
     int initialization = 0; // Initialize loop variable
     while(initialization < 5) // Condition to continue loop
@@ -121,9 +125,10 @@ Console.WriteLine($"The day is {dayName}");
     {
         //code to execute
     }
-
 */
-//For Loop Example
+
+
+//************************************ For Loop Example ************************************//
 /*
 int sum = 0;
 Console.WriteLine("Calculating the sum of the first user defined natural numbers...");
@@ -135,14 +140,17 @@ for(int i = 1; i <= maxNumber; i++)
 Console.WriteLine($"The sum of the first user defined natural numbers is: {sum}");
 */
 
-//While loop
+
+//************************************ While Loop Syntax ************************************//
 /*
     while(condition)
     {      
         //code to execute
     }
 */
-//While Loop Example
+
+
+//************************************ While Loop Example ************************************//
 /*
 Console.WriteLine("Counting from 1 to user defined number using a while loop...");
 int count = 0;
@@ -155,14 +163,17 @@ while(count < maxCount)
 }
 */
 
-//Do-while loop
+
+//************************************ Do-while Loop Syntax ************************************//
 /*
     do
     {
         //code to execute               
     } while(condition);
 */
-//Do-While Loop Example
+
+
+//************************************ Do-While Loop Example ************************************//
 /*
 Console.WriteLine("Counting from 1 to user defined number using a do-while loop...");           
 int count = 0;
@@ -175,32 +186,25 @@ do
 } while(count < maxCount);  
 */
 
-//Foreach loop
+
+//************************************ Foreach loop ************************************//
 /*
     foreach(var item in collection)
     {
         //code to execute
     }
 */
-//Foreach Loop Example
+
+
+//************************************ Foreach Loop Example ************************************//
 /*
-Console.WriteLine("Enter the number of elements in the array:");    
-int arraySize = int.Parse(Console.ReadLine());
-int[] numbers = new int[arraySize];
-Console.WriteLine($"Enter {arraySize} integers:");
-foreach(int i in numbers)
-{
-    numbers[i] = int.Parse(Console.ReadLine());
-}
-Console.WriteLine("The numbers you entered are:");
+int[] numbers = new int[3] { 1, 2, 3 };
+Console.WriteLine("The numbers in the array are:");
 foreach(int i in numbers)
 {
     Console.WriteLine(i);
 }
-*/
 
-
-/*
 string[] shoppingList = { "Milk", "Bread", "Eggs", "Butter", "Cheese" };
 Console.WriteLine("Your shopping list:");
 foreach(string item in shoppingList)
@@ -210,13 +214,14 @@ foreach(string item in shoppingList)
 */
 
 
-//Break and Continue
+//************************************ Break and Continue ************************************//
 /*
 1. break - exits the current loop or switch statement
 2. continue - skips the current iteration of the loop and moves to the next iteration
 */
 
-//break Example
+
+//************************************ Break Example ************************************//
 /*
 Console.WriteLine("Searching for a student named mentioned by the user in the class...");
 string studentName = Console.ReadLine().ToUpper(); // Convert input to uppercase for case-insensitive comparison
@@ -233,7 +238,8 @@ for(int i = 0; i < students.Length; i++)
 }
 */
 
-//continue Example
+
+//************************************ Continue Example ************************************//
 /*
 for(int i = 1; i <= 10; i++)
 {
@@ -248,6 +254,9 @@ for(int i = 1; i <= 10; i++)
 
 
 
+//************************************ Practice Session ************************************//
+
+/*
 Console.ForegroundColor = ConsoleColor.Green;
 Console.WriteLine("*********************************************************");
 Console.WriteLine("*********************************************************");
@@ -255,11 +264,11 @@ Console.WriteLine("******************  Practice Session  *******************");
 Console.WriteLine("*********************************************************");
 Console.WriteLine("*********************************************************");
 Console.ResetColor();
+*/
 
 
-
-// 1. Write a program that prints a multiplication table for any number entered by the user (e.g., 7 × 1
-// through 7 × 10).
+//************************************************************************************* Practice Problems *********************************************************************// 
+//1. Write a program that prints a multiplication table for any number entered by the user (e.g., 7 × 1 through 7 × 10).
 //Solution:
 /*
 Console.WriteLine("--- Multiplication Table (For Loop) ---");
@@ -272,8 +281,8 @@ for(int i = 1; i <= 10; i++)
 }
 */
 
-// 2. Use a switch statement: ask the user to enter a season number (1=Spring, 2=Summer, 3=Autumn,
-// 4=Winter) and print the season name and its typical activities.
+
+// 2. Use a switch statement: ask the user to enter a season number (1=Spring, 2=Summer, 3=Autumn, 4=Winter) and print the season name and its typical activities.
 //Solution:
 /*
 Console.WriteLine("--- Season Check (Switch Statement) ---");
@@ -314,8 +323,8 @@ switch (month)
 Console.WriteLine($"\nThe month number {month} typically falls during {season}.");
 */
 
-// 3. Use a while loop to simulate a bank ATM: start with a balance of Rs 10,000. Let the user withdraw
-// money repeatedly until the balance is 0 or they choose to exit.
+
+// 3. Use a while loop to simulate a bank ATM: start with a balance of Rs 10,000. Let the user withdraw money repeatedly until the balance is 0 or they choose to exit.
 //Solution:
 /*
 Console.WriteLine("--- ATM Simulation (Do-While Loop) ---");
@@ -383,10 +392,7 @@ do
 */
 
 
-
-
-// 4. Print all numbers from 1 to 100 that are divisible by both 3 and 5 using a for loop and the modulus
-// operator.
+// 4. Print all numbers from 1 to 100 that are divisible by both 3 and 5 using a for loop and the modulus operator.
 //Solution:
 /*
 Console.WriteLine("--- Numbers divisible by both 3 AND 5 (between 1 and 100) ---");
@@ -408,6 +414,3 @@ for (int i = 1; i <= 100; i++)
     }
 }
 */
-
-
-
