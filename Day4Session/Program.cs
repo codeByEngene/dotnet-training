@@ -1,5 +1,4 @@
-﻿using System;
-/*
+﻿/*
 1. Methods (Parameters, Return Types, Overloading)
 2. Recursion
 */
@@ -48,4 +47,40 @@ void Greet()
 
 Greet(); // Output: Hello!
 */
+
+
+
+//Method Overloading
+/*
+using MyNamespace;
+
+Maths maths = new Maths();
+maths.Greetings();
+maths.Greetings("Alice");
+maths.Greetings("Bob", "Kathmandu");
+
+namespace MyNamespace
+{
+    public class Maths
+    {
+        public void Greetings()
+        {
+            Console.WriteLine("Hello Stranger!");
+        }
+
+        public void Greetings(string name)
+        {
+            Console.WriteLine($"Hello {name}!");
+        }
+
+        public void Greetings(string name, string address)
+        {
+            Console.WriteLine($"Hello {name} from {address}!");
+        }
+    }
+}
+*/
+
+
+
 
