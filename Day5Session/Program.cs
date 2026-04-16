@@ -319,6 +319,200 @@ Console.ResetColor();
 
 //************************************************************************************* Practice Problems *********************************************************************// 
 // 1. Create a 'Rectangle' class with private fields Width and Height, a parameterised constructor, public properties with validation (no negative values), and methods GetArea() and GetPerimeter().
+// Solution:
+/*
+public class Rectangle
+{
+    private double _width;
+    private double _height;
+
+    // public double Width
+    // {
+    //     get { return _width; } // This is what happens when we READ the width.
+    //     set { _width = value; } // This is what happens when we WRITE/SET the width.
+    // }
+
+    // Public properties with validation (Ensures no negative dimensions)
+    public double Width
+    {
+        get => _width;
+        set
+        {
+            if (value < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(Width), "Width cannot be negative.");
+            }
+            _width = value;
+        }
+    }
+
+    public double Height
+    {
+        get => _height;
+        set
+        {
+            if (value < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(Height), "Height cannot be negative.");
+            }
+            _height = value;
+        }
+    }
+
+    // Parameterized constructor
+    public Rectangle(double width, double height)
+    {
+        // Use the setters to automatically trigger validation
+        this.Width = width;
+        this.Height = height;
+        Console.WriteLine($"\nRectangle Created: {width}x{height}");
+    }
+
+    // Method to calculate the area
+    public double GetArea()
+    {
+        return Width * Height;
+    }
+
+    // Method to calculate the perimeter
+    public double GetPerimeter()
+    {
+        return 2 * (Width + Height);
+    }
+}
+*/
+
+
 // 2. Create a 'Person' class with Name, Age, Email. The Email property must validate that it contains '@'. If invalid, throw an exception.
 // 3. Add a static field 'TotalObjects' to your Person class. Every time a Person is created, increment it. After creating 5 people, print the total count.
+// Solution:
+/*
+public class Person
+{
+    public static int TotalObjects { get; private set; } = 0;
+    public string Name { get; set; }
+    public int Age { get; set; }
+    private string Email { get; set; } 
+
+    // Constructor: Runs when a new Person is created.
+    public Person(string name, int age, string email)
+    {       
+        TotalObjects++;  
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentException("Person name cannot be empty.");
+        }
+            
+        if (age < 0)
+            throw new ArgumentOutOfRangeException(nameof(Age), "Age must be zero or positive.");
+
+        // Check if the email string contains the '@' symbol.
+        if (string.IsNullOrWhiteSpace(email) || !email.Contains("@"))
+        {
+            throw new FormatException("Error: The email must be a valid format (it needs '@').");
+        }
+
+        Name = name;
+        Age = age;
+        Email = email;
+        Console.WriteLine($"Person Successfully created: {Name}");
+    }
+}
+*/
+
+
 // 4. Create a 'Temperature' class that stores Celsius internally but has a computed property 'Fahrenheit' that converts it: F = (C × 9/5) + 32.
+// Solution:
+/*
+public class Temperature
+{
+    private double Celsius { get; set; }
+
+    // Constructor
+    public Temperature(double celsius)
+    {
+        // Simple input check
+        if (celsius < -273.15) 
+            throw new ArgumentException("Temperature is too cold (below absolute zero).");
+            
+        Celsius = celsius;
+        Console.WriteLine($"\n Temperature Set to {celsius}°C.");
+    }
+    public double Fahrenheit()
+    {
+        return (Celsius * 9 / 5) + 32;        
+    }
+}
+*/
+
+//Complete Program
+/*
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        Console.WriteLine("\n*********************************************************");
+        Console.WriteLine("*********************************************************");
+        Console.WriteLine("******************  1. Rectangle ************************");
+        Console.WriteLine("*********************************************************");
+        Console.WriteLine("*********************************************************\n");
+        var rectangle = new Rectangle(10.0, 5.0);
+        Console.WriteLine($"Area: {rectangle.GetArea()}");
+        Console.WriteLine($"Perimeter: {rectangle.GetPerimeter()}");
+        Console.WriteLine("\n--- Trying to create a rectangle with negative width ---");
+        try
+        {
+            var invalidBox = new Rectangle(-5.0, 10.0);
+        }
+        catch (Exception e)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"Error: Successfully blocked invalid input. Reason: {e.Message}");
+            Console.ResetColor();
+        }
+
+        Console.WriteLine("\n*********************************************************");
+        Console.WriteLine("*********************************************************");
+        Console.WriteLine("******************  2. & 3. Person **********************");
+        Console.WriteLine("*********************************************************");
+        Console.WriteLine("*********************************************************\n");
+        Person personOne    = new Person("Alice", 30, "alice@example.com");
+        Person personTwo    = new Person("Bob", 25, "bob@work.net");
+        Person personThree  = new Person("Charlie", 40, "charlie@home.org");
+        Person personFour   = new Person("Diana", 22, "diana@test.edu");
+        Person personFive   = new Person("Edward", 50, "edward@corporate.biz");
+
+        Console.WriteLine($"\nTotal number of people created (Static Count): {Person.TotalObjects}");
+        Console.WriteLine("\nTrying to create a person with invalid email ---");
+        try
+        {
+            Person p6 = new Person("Frank", 35, "franknodotcom"); 
+        }
+        catch (FormatException e)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"Error: Validation successfully failed. Reason: {e.Message}");
+            Console.ResetColor();
+        }
+        
+
+        Console.WriteLine("\n*********************************************************");
+        Console.WriteLine("*********************************************************");
+        Console.WriteLine("******************  4. Temperature **********************");
+        Console.WriteLine("*********************************************************");
+        Console.WriteLine("*********************************************************\n");
+        // Example 1: Freezing point (0°C)
+        var freezingPoint = new Temperature(0.0);
+        // We don't set a property; we just read the computed value.
+        Console.WriteLine($"The Fahrenheit temperature is: {freezingPoint.Fahrenheit():F2}°F"); 
+
+        // Example 2: Boiling point (100°C)
+        var boilingPoint = new Temperature(100.0);
+        Console.WriteLine($"The Fahrenheit temperature is: {boilingPoint.Fahrenheit():F2}°F"); 
+        
+        // Example 3: Crossover point (-40°C)
+        var crossoverPoint = new Temperature(-40.0);
+        Console.WriteLine($"The Fahrenheit temperature is: {crossoverPoint.Fahrenheit()}°F");
+    }
+}
+*/
