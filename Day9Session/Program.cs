@@ -362,16 +362,7 @@ using System.Text.Json;    // JSON reading/writing
 
 
 
-
-
-
-
-
-
-
-
-
-
+/*
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -463,3 +454,29 @@ public class UniversityRoster
 //         Console.WriteLine(json);
 //     }
 // }
+*/
+
+
+
+
+
+
+/*
+Console.ForegroundColor = ConsoleColor.Green;
+Console.WriteLine("*********************************************************");
+Console.WriteLine("*********************************************************");
+Console.WriteLine("******************  Practice Session  *******************");
+Console.WriteLine("*********************************************************");
+Console.WriteLine("*********************************************************");
+Console.ResetColor();
+*/
+
+
+//************************************************************************************* Practice Problems *********************************************************************// 
+/*
+1. Write a method that searches for a specific string across all .txt files in a folder and returns a list of the filenames that contain that string.
+2. Write a method to compare two files line-by-line and return the exact line number where the first difference is found.
+3. Write a program to read a CSV file containing "Product,Price" data and calculate the total sum of all prices.
+4. Write a method that finds all files in a directory larger than 1MB and moves them into a new folder called "LargeFiles".
+5. Write a program that renames all files in a folder by adding a prefix (like "Processed_") and a current date to the original filename.
+*/
