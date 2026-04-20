@@ -480,3 +480,225 @@ Console.ResetColor();
 4. Write a method that finds all files in a directory larger than 1MB and moves them into a new folder called "LargeFiles".
 5. Write a program that renames all files in a folder by adding a prefix (like "Processed_") and a current date to the original filename.
 */
+//Solution
+/*
+using System;
+using System.Collections.Generic;
+using System.IO; // Required for all File and Directory operations
+using System.Linq;
+
+namespace FileAssignmentSolution
+{
+    class Program
+    {
+        // We define a folder name. The program will create this folder automatically.
+        static string folderPath = "StudentDataFolder";
+
+        static void Main(string[] args)
+        {
+            // --- PREPARATION STEP ---
+            // We call this first so that files exist before we try to read them.
+            CreateSeedFiles();
+
+            Console.WriteLine("=== File Operations Assignment ===\n");
+
+            // 1. Search String
+            Console.WriteLine("Task 1: Searching for 'Apple' in .txt files...");
+            var results = SearchForString("Apple");
+            Console.WriteLine("Files containing 'Apple': " + string.Join(", ", results));
+
+            // 2. Compare Files
+            Console.WriteLine("\nTask 2: Comparing file1.txt and file2.txt...");
+            int diffLine = CompareFiles("file1.txt", "file2.txt");
+            if (diffLine == -1) Console.WriteLine("Files are identical.");
+            else Console.WriteLine($"First difference found on line: {diffLine}");
+
+            // 3. CSV Sum
+            Console.WriteLine("\nTask 3: Calculating total price from products.csv...");
+            double total = SumCsvPrices("products.csv");
+            Console.WriteLine($"Total Sum: ${total}");
+
+            // 4. Move Large Files
+            Console.WriteLine("\nTask 4: Moving files larger than 1MB to 'LargeFiles' folder...");
+            MoveLargeFiles();
+            Console.WriteLine("Movement complete.");
+
+            // 5. Rename Files
+            Console.WriteLine("\nTask 5: Renaming remaining files with prefix and date...");
+            RenameFiles();
+            Console.WriteLine("Renaming complete.");
+
+            Console.WriteLine("\n--- All tasks finished. Check the 'StudentDataFolder' in your project folder! ---");
+            Console.ReadKey();
+        }
+
+        /// <summary>
+        /// This method creates the folder and seeds it with random data 
+        /// so the students have files to work with immediately.
+        /// </summary>
+        static void CreateSeedFiles()
+        {
+            // If folder already exists, delete it to start fresh for the demonstration
+            if (Directory.Exists(folderPath))
+            {
+                Directory.Delete(folderPath, true);
+            }
+
+            // Create the main directory
+            Directory.CreateDirectory(folderPath);
+
+            // Seed File 1 (Contains 'Apple')
+            File.WriteAllText(Path.Combine(folderPath, "file1.txt"), "Hello\nI love Apple juice\nGood day");
+
+            // Seed File 2 (Different from File 1 on line 2)
+            File.WriteAllText(Path.Combine(folderPath, "file2.txt"), "Hello\nI love Orange juice\nGood day");
+
+            // Seed File 3 (Another .txt file without 'Apple')
+            File.WriteAllText(Path.Combine(folderPath, "notes.txt"), "This is just a regular note.");
+
+            // Seed CSV File (Product,Price)
+            File.WriteAllText(Path.Combine(folderPath, "products.csv"), "Apple,1.50\nBanana,0.75\nMilk,3.20\nBread,2.10");
+
+            // Seed a Large File (Approx 1.1 MB)
+            // We create a byte array of 1.1 million bytes to ensure it's > 1MB
+            byte[] largeData = new byte[1100000]; 
+            File.WriteAllBytes(Path.Combine(folderPath, "bigfile.dat"), largeData);
+
+            // Seed a Small File
+            File.WriteAllText(Path.Combine(folderPath, "smallfile.txt"), "I am too small to move.");
+            
+            Console.WriteLine("System: Seed files created successfully.\n");
+        }
+
+        // 1. Method to search for a string across all .txt files
+        static List<string> SearchForString(string word)
+        {
+            List<string> foundFiles = new List<string>();
+
+            // Get only files ending in .txt
+            string[] files = Directory.GetFiles(folderPath, "*.txt");
+
+            foreach (string path in files)
+            {
+                // Read all text in the file
+                string content = File.ReadAllText(path);
+
+                // Check if word exists (ignoring case)
+                if (content.Contains(word, StringComparison.OrdinalIgnoreCase))
+                {
+                    // Add only the name of the file, not the full path
+                    foundFiles.Add(Path.GetFileName(path));
+                }
+            }
+            return foundFiles;
+        }
+
+        // 2. Method to compare two files line-by-line
+        static int CompareFiles(string file1, string file2)
+        {
+            // Combine the folder path with the filename
+            string path1 = Path.Combine(folderPath, file1);
+            string path2 = Path.Combine(folderPath, file2);
+
+            // Read lines into arrays
+            string[] lines1 = File.ReadAllLines(path1);
+            string[] lines2 = File.ReadAllLines(path2);
+
+            // We compare up to the length of the shortest file to avoid errors
+            int limit = Math.Min(lines1.Length, lines2.Length);
+
+            for (int i = 0; i < limit; i++)
+            {
+                // If lines are different, return the line number (index + 1)
+                if (lines1[i] != lines2[i])
+                {
+                    return i + 1;
+                }
+            }
+
+            // If one file is longer than the other, that is also a difference
+            if (lines1.Length != lines2.Length) return limit + 1;
+
+            return -1; // No difference found
+        }
+
+        // 3. Method to sum prices in a CSV
+        static double SumCsvPrices(string fileName)
+        {
+            double total = 0;
+            string path = Path.Combine(folderPath, fileName);
+
+            // Read all lines of the CSV
+            string[] lines = File.ReadAllLines(path);
+
+            foreach (string line in lines)
+            {
+                // Split the line by the comma (e.g. "Apple,1.50")
+                string[] parts = line.Split(',');
+
+                // Check if we actually have two parts (Product and Price)
+                if (parts.Length == 2)
+                {
+                    // Try to convert the price string to a number
+                    if (double.TryParse(parts[1], out double price))
+                    {
+                        total += price;
+                    }
+                }
+            }
+            return total;
+        }
+
+        // 4. Method to move files > 1MB
+        static void MoveLargeFiles()
+        {
+            string targetDir = Path.Combine(folderPath, "LargeFiles");
+
+            // Create the "LargeFiles" directory if it doesn't exist
+            if (!Directory.Exists(targetDir))
+            {
+                Directory.CreateDirectory(targetDir);
+            }
+
+            // Get all files in the main folder
+            string[] files = Directory.GetFiles(folderPath);
+
+            foreach (string path in files)
+            {
+                // Use FileInfo to get the size in bytes
+                FileInfo info = new FileInfo(path);
+
+                // 1MB = 1024 * 1024 bytes
+                if (info.Length > 1024 * 1024)
+                {
+                    string destination = Path.Combine(targetDir, info.Name);
+                    File.Move(path, destination);
+                }
+            }
+        }
+
+        // 5. Method to rename files with prefix and date
+        static void RenameFiles()
+        {
+            string dateStr = DateTime.Now.ToString("yyyy-MM-dd");
+            string prefix = "Processed_";
+
+            string[] files = Directory.GetFiles(folderPath);
+
+            foreach (string path in files)
+            {
+                string fileName = Path.GetFileName(path);
+
+                // Safety: Don't rename files that already have the prefix
+                if (fileName.StartsWith(prefix)) continue;
+
+                // Construct new name: Processed_2023-10-27_filename.txt
+                string newName = $"{prefix}{dateStr}_{fileName}";
+                string destination = Path.Combine(folderPath, newName);
+
+                File.Move(path, destination);
+            }
+        }
+    }
+}
+*/
