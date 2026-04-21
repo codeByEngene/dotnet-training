@@ -19,6 +19,8 @@ It's no longer human-readable, but it's also not yet something your computer's p
 Step 3 — The CLR manages things
 The Common Language Runtime is like a kitchen manager. When your program runs, the CLR watches over it — 
 it cleans up memory you no longer need (garbage collection), catches errors so your app doesn't crash badly, and keeps everything running safely.
+mark and sweep algorithm: The GC periodically scans the memory to find objects that are no longer referenced by the application. It marks those objects and then sweeps through the memory to free up the space they occupied.
+
 
 Step 4 — The JIT makes it fast
 The Just-In-Time compiler is the chef who actually cooks. It reads those symbols and converts them into real instructions that your specific computer's processor understands — right as the program is running.
