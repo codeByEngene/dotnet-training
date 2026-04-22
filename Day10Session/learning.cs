@@ -220,6 +220,9 @@ Init-Only Setters: Properties marked as init can only be set during initializati
 - API Response, Request
 - DTO (Data Transfer Object)
 
+//Records can have methods, properties, and even implement interfaces, just like classes.
+
+
 Note: Records can have methods, properties, and even implement interfaces, just like classes. 
 The main difference is that they come with built-in behavior for immutability and value-based equality, making them ideal for representing data.
 
@@ -419,6 +422,16 @@ public class InheritanceDemo
 */
 
 /*
+// Cloning of records
+//T1: Creation account -> [Object A] (GC sees: Object A is reachable. Keep it.)
+//T2: Reassignment account-> [Object B] ... [Object A] (Floating alone) (GC sees: Object B is reachable. Object A is NOT reachable.)
+//T3: GC Cycle Runs account -> [Object B] ... [ X ] (Object A is deleted) (GC says: "I found Object A, but no one is using it. Delete!")
+//Object A is orphaned and will be collected by the GC in the next cycle. This is how immutability works with records: every change creates a new object, and the old one is left for garbage collection if it's no longer referenced.
+//mark and sweep algorithm: The GC periodically scans the memory to find objects that are no longer referenced by the application. It marks those objects and then sweeps through the memory to free up the space they occupied.
+
+
+
+
 //Full Example: Using Records in a Bank System
 using System;
 using System.Collections.Generic;
@@ -496,6 +509,7 @@ public class DelegateDemo {
 
 //A delegate can hold multiple methods at once. 
 //When the delegate is invoked, all attached methods are called in the order they were added.
+//All methods pointed by delegates must have the same signature (same return type and parameters) to be combined into a multicast delegate.
 /*
 Note: Delegate is a strict contract. You can only attach methods that match its signature (parameters and return type).
 If you define a delegate as Notify(string message), every single method you attach to it must match that exact signature (it must take exactly one string and return void).
@@ -698,4 +712,154 @@ Console.ResetColor();
 3. Create a "Tax Engine" method that accepts a decimal amount and an array of Func<decimal, decimal> (strategies), applying each tax/discount function sequentially to the total.
 4. Define a PaymentFailed delegate and use it to create a multicast event that triggers three separate notification methods (Email, SMS, and System Log) whenever a transaction is rejected.
 5. Implement a generic method ProcessWithRetry<T> that takes an Action<T> (the payment logic) and a Func<bool> (the condition); it should execute the action repeatedly until the condition returns true or a max retry limit is hit.
+*/
+//Solution
+
+/*
+1. Create a readonly struct Transaction (containing Amount and Id) and a class Account (containing Balance and a List<Transaction>) to manage immutable payment records and stateful accounts.
+2. Implement a method AnalyzeAccount in the Account class that returns a named tuple (decimal TotalSpent, decimal MaxTransaction) by calculating the sum and peak of all transactions.
+3. Create a "Tax Engine" method that accepts a decimal amount and an array of Func<decimal, decimal> (strategies), applying each tax/discount function sequentially to the total.
+4. Define a PaymentFailed delegate and use it to create a multicast event that triggers three separate notification methods (Email, SMS, and System Log) whenever a transaction is rejected.
+5. Implement a generic method ProcessWithRetry<T> that takes an Action<T> (the payment logic) and a Func<bool> (the condition); it should execute the action repeatedly until the condition returns true or a max retry limit is hit.
+*/
+/*
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace PaymentSystem
+{
+    // 1. [Structs & Classes] 
+    // Transaction is a readonly struct (Value Type) for immutability and performance
+    // If your struct doesn't need to change after it's created, always make it a readonly struct.
+    // the compiler creates a Defensive Copy (a hidden clone of the struct) every time you call a method on it. If your struct is large, creating thousands of these clones slows down your program.
+    public readonly struct Transaction
+    {
+        public decimal Amount { get; }
+        public int Id { get; }
+
+        public Transaction(int id, decimal amount)
+        {
+            Id = id;
+            Amount = amount;
+        }
+    }
+
+    // Account is a class (Reference Type) to maintain state over time
+    public class Account
+    {
+        public string Owner { get; set; }
+        public decimal Balance { get; set; }
+        public List<Transaction> Transactions { get; } = new List<Transaction>();
+
+        public Account(string owner, decimal initialBalance)
+        {
+            Owner = owner;
+            Balance = initialBalance;
+        }
+
+        // 2. [Named Tuples] 
+        // Returns a named tuple for clear, multi-value output without a custom class
+        public (decimal TotalSpent, decimal MaxTransaction) AnalyzeAccount()
+        {
+            decimal total = Transactions.Sum(t => t.Amount);
+            decimal max = Transactions.Any() ? Transactions.Max(t => t.Amount) : 0;
+            return (TotalSpent: total, MaxTransaction: max);
+        }
+    }
+
+    // 4. [Multicast Delegates]
+    // Defining the delegate signature for payment failures
+    public delegate void PaymentFailedHandler(string reason);
+
+    public class PaymentProcessor
+    {
+        // The multicast delegate instance
+        public PaymentFailedHandler OnPaymentFailed;
+
+        // 3. [Higher-Order Delegates]
+        // This method takes an array of Func delegates and applies them sequentially
+        public decimal ApplyTaxes(decimal amount, Func<decimal, decimal>[] strategies)
+        {
+            decimal finalAmount = amount;
+            foreach (var strategy in strategies)
+            {
+                finalAmount = strategy(finalAmount);
+            }
+            return finalAmount;
+        }
+
+        // 5. [Generic Delegate Wrapper]
+        // Executes an Action<T> repeatedly until the Func<bool> condition is met
+        public void ProcessWithRetry<T>(Action<T> action, Func<bool> condition, T data)
+        {
+            int attempts = 0;
+            while (!condition() && attempts < 3)
+            {
+                attempts++;
+                Console.WriteLine($"Attempt {attempts}: Processing payment...");
+                action(data);
+                
+                // Simulate a condition change for the sake of the demo
+                if (attempts == 2) Console.WriteLine("-> System recovered!"); 
+            }
+
+            if (!condition())
+            {
+                Console.WriteLine("Max retries reached. Payment failed.");
+                OnPaymentFailed?.Invoke("Network Timeout");
+            }
+        }
+    }
+
+
+    class Program
+    {
+        static void Main()
+        {
+            // --- Setup ---
+            Account myAccount = new Account("John Doe", 1000m);
+            PaymentProcessor processor = new PaymentProcessor();
+
+            // Assigning Multicast Delegates (Requirement 4)
+            processor.OnPaymentFailed += (msg) => Console.WriteLine($"[Email] Alert: {msg}");
+            processor.OnPaymentFailed += (msg) => Console.WriteLine($"[SMS] Alert: {msg}");
+            processor.OnPaymentFailed += (msg) => Console.WriteLine($"[LOG] System Logged: {msg}");
+
+            // Define Tax/Discount Strategies (Requirement 3)
+            // Strategy 1: Add 10% Tax, Strategy 2: Subtract $5 flat discount
+            Func<decimal, decimal>[] taxStrategies = {
+                amt => amt * 1.10m, 
+                amt => amt - 5m
+            };
+
+            decimal originalAmount = 100m;
+            decimal finalAmount = processor.ApplyTaxes(originalAmount, taxStrategies);
+            Console.WriteLine($"Original: {originalAmount} -> After Taxes/Discounts: {finalAmount}");
+
+            // --- Execution with Retry (Requirement 5) ---
+            bool isSystemOnline = false; // Simulate system offline
+            
+            // Logic: Try to subtract money from account. Retry until isSystemOnline is true.
+            processor.ProcessWithRetry(
+                action: (acc) => {
+                    acc.Balance -= finalAmount;
+                    acc.Transactions.Add(new Transaction(1, finalAmount));
+                },
+                condition: () => isSystemOnline, 
+                data: myAccount
+            );
+
+            // Manually trigger the condition for demo purposes if you want it to succeed
+            // isSystemOnline = true; 
+
+            // --- Final Analysis (Requirement 2) ---
+            var stats = myAccount.AnalyzeAccount();
+            Console.WriteLine($"\nAnalysis for {myAccount.Owner}:");
+            Console.WriteLine($"Total Spent: {stats.TotalSpent}");
+            Console.WriteLine($"Max Transaction: {stats.MaxTransaction}");
+            Console.WriteLine($"Remaining Balance: {myAccount.Balance}");
+        }
+    }
+}
 */

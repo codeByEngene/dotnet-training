@@ -285,3 +285,4 @@ appsettings.json
 .DS_Store
 
 test.cs
+run_async_tests.cs
