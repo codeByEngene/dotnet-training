@@ -479,64 +479,53 @@ namespace DI_Examples
 
 
 //Method Injection
-//The dependency is passed as a parameter directly into the method that needs it. This is used when a class doesn't need the dependency for its entire life, but only for one specific task.
+//The dependency is passed as a parameter directly into the method that needs it. 
+//This is used when a class doesn't need the dependency for its entire life, but only for one specific task.
 
 /*
 using System;
+using System.Threading.Tasks;
 
-namespace DI_Examples
-{
-    // 1. THE INTERFACE
-    public interface ILogger {
-        void Log(string message);
+public interface IFileService {
+    void Save(string fileName, string content);
+}
+
+public class DiskFileService : IFileService {
+    public void Save(string fileName, string content) => Console.WriteLine($"Saved to Disk: {fileName}");
+}
+
+public class CloudFileService : IFileService {
+    public void Save(string fileName, string content) => Console.WriteLine($"Saved to Cloud: {fileName}");
+}
+
+public class ReportGenerator {
+    // Notice: There is NO constructor injection here. 
+    // The class doesn't "own" a file service.
+
+    public string CreateReportContent() {
+        return "This is the report data: 100 units sold.";
     }
 
-    // 2. IMPLEMENTATIONS
-    public class ConsoleLogger : ILogger {
-        public void Log(string message) => Console.WriteLine($"Log to Console: {message}");
-    }
-
-    public class FileLogger : ILogger {
-        public void Log(string message) => Console.WriteLine($"Log to File: {message}");
-    }
-
-    // 3. THE CLIENT CLASS
-    public class BusinessProcessor {
-        // PROPERTY INJECTION:
-        // The dependency is a public property. This means it can be set 
-        // AFTER the object is instantiated.
-        public ILogger Logger { get; set; }
-
-        public void ProcessPayment() {
-            Console.WriteLine("Processing payment...");
-
-            // Because Property Injection is optional, we must check if the 
-            // logger was actually provided before using it (using the ? operator).
-            Logger?.Log("Payment processed successfully.");
-        }
-    }
-
-    class Program {
-        static void Main() {
-            var processor = new BusinessProcessor();
-
-            // 1. Test without a logger (It should still work, just not log anything)
-            Console.WriteLine("Step 1: No logger assigned.");
-            processor.ProcessPayment(); 
-
-            // 2. Inject ConsoleLogger via the property
-            Console.WriteLine("\nStep 2: Injecting ConsoleLogger.");
-            processor.Logger = new ConsoleLogger();
-            processor.ProcessPayment();
-
-            // 3. Switch to FileLogger at runtime without creating a new processor
-            Console.WriteLine("\nStep 3: Changing to FileLogger at runtime.");
-            processor.Logger = new FileLogger();
-            processor.ProcessPayment();
-        }
+    // METHOD INJECTION: The service is passed as a parameter directly to the method
+    public void ExportReport(string content, IFileService fileService) {
+        fileService.Save("Report.txt", content);
     }
 }
 
+class Program {
+    static void Main() {
+        var generator = new ReportGenerator();
+        string report = generator.CreateReportContent();
+
+        // We can choose WHICH service to inject at the moment we call the method!
+        
+        // 1. Inject the Disk Service
+        generator.ExportReport(report, new DiskFileService());
+
+        // 2. Inject the Cloud Service
+        generator.ExportReport(report, new CloudFileService());
+    }
+}
 */
 
 /*
@@ -555,4 +544,194 @@ Console.ResetColor();
 3. Develop a system that sends "Welcome" emails to a list of users asynchronously using an injected IEmailService (simulated with Task.Delay).
 4. Build a program that fetches a user's "Profile Data" and "Order History" from two different async methods using an injected IUserRepository.
 5. Create a console app that fetches the current price of 5 different stocks concurrently using an injected IStockService.
+*/
+//Solution:
+/*
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.IO; // Added for File I/O
+
+namespace AsyncDI_Practice
+{
+    // INTERFACES
+    public interface IWeatherService 
+    { 
+        Task<string> GetWeatherAsync(string city); 
+    }
+    public interface IFileService { 
+        void CreateDummyFiles(); 
+        string ReadText(string path); 
+    } 
+    public interface IEmailService 
+    { 
+        Task SendEmailAsync(string user); 
+    }
+    public interface IUserRepository 
+    { 
+        Task<string> GetProfileAsync(int id); 
+        Task<string> GetOrdersAsync(int id); 
+    }
+    public interface IStockService 
+    { 
+        Task<decimal> GetPriceAsync(string symbol); 
+    }
+
+    // IMPLEMENTATIONS
+    
+    public class WeatherService : IWeatherService {
+        public async Task<string> GetWeatherAsync(string city) {
+            await Task.Delay(500); 
+            return $"Weather in {city}: 22°C";
+        }
+    }
+
+    public class FileService : IFileService {
+        public void CreateDummyFiles() {
+            File.WriteAllText("file1.txt", "The quick brown fox");
+            File.WriteAllText("file2.txt", "Jumps over the lazy dog");
+            File.WriteAllText("file3.txt", "Coding in C# is fun");
+            Console.WriteLine("[System] Dummy files created on disk.");
+        }
+
+        public string ReadText(string path) {
+            return File.ReadAllText(path); 
+        }
+    }
+
+    public class EmailService : IEmailService {
+        public async Task SendEmailAsync(string user) {
+            await Task.Delay(100); 
+            Console.WriteLine($"Email sent to {user}!");
+        }
+    }
+
+    public class UserRepository : IUserRepository {
+        public async Task<string> GetProfileAsync(int id) 
+        { 
+            await Task.Delay(500); 
+            return $"Profile for User {id}"; 
+        }
+        public async Task<string> GetOrdersAsync(int id) 
+        { 
+            await Task.Delay(500); 
+            return $"Orders for User {id}: [Order1, Order2]"; 
+        }
+    }
+
+    public class StockService : IStockService {
+        public async Task<decimal> GetPriceAsync(string symbol) {
+            await Task.Delay(500);
+            return (decimal)new Random().NextDouble() * 100;
+        }
+    }
+
+    // MANAGERS
+    public class WeatherManager {
+        private readonly IWeatherService _service;
+        public WeatherManager(IWeatherService service) => _service = service;
+        public async Task RunAsync() {
+            var cities = new[] { "London", "New York", "Tokyo" };
+            var tasks = cities.Select(c => _service.GetWeatherAsync(c));
+            var results = await Task.WhenAll(tasks);
+            Console.WriteLine($"[Weather] {string.Join(", ", results)}");
+        }
+    }
+
+    public class FileManager {
+        private readonly IFileService _myPermanentStorage;
+        public FileManager(IFileService temporaryDelivery) 
+        {
+            _myPermanentStorage = temporaryDelivery;
+        }
+        public async Task RunAsync() {
+            var files = new[] { "file1.txt", "file2.txt", "file3.txt" };
+            
+            // Task.Run is used here to move the synchronous File.ReadAllText off the main thread
+            var tasks = files.Select(f => Task.Run(() => _myPermanentStorage.ReadText(f))).ToList();
+            
+            var contents = await Task.WhenAll(tasks);
+            int totalWords = contents.Sum(text => text.Split(' ').Length);
+            Console.WriteLine($"[Files] Total words read from disk: {totalWords}");
+        }
+    }
+
+    public class EmailManager {
+        private readonly IEmailService _service;
+        public EmailManager(IEmailService service)
+        {
+            _service = service;
+        } 
+        public async Task RunAsync() {
+            var users = new[] { "Alice", "Bob", "Charlie" };
+            foreach (var user in users) await _service.SendEmailAsync(user);
+            Console.WriteLine("[Email] All welcome emails sent.");
+        }
+    }
+
+    public class UserManager {
+        private readonly IUserRepository _repo;
+        public UserManager(IUserRepository repo) 
+        { 
+            _repo = repo;
+        }
+        public async Task RunAsync() {
+            var profileTask = _repo.GetProfileAsync(1);
+            var ordersTask = _repo.GetOrdersAsync(1);
+            await Task.WhenAll(profileTask, ordersTask);
+            Console.WriteLine($"[User] {profileTask.Result} | {ordersTask.Result}");
+        }
+    }
+
+    public class StockManager {
+        private readonly IStockService _service;
+        public StockManager(IStockService service) 
+        {
+             _service = service;
+        }
+        public async Task RunAsync() {
+            var stocks = new[] { "ADBL", "NHPC", "ALG", "HRI", "BLA" };
+            var tasks = stocks.Select(s => _service.GetPriceAsync(s));
+            var prices = await Task.WhenAll(tasks);
+            Console.WriteLine($"[Stocks] Average Price: {prices.Average():C2}");
+        }
+    }
+
+    // MAIN EXECUTION
+    class Program
+    {
+        static async Task Main(string[] args)
+        {
+            Console.WriteLine("Starting Async/DI Practice Application...\n");
+
+            // --- File Setup ---
+            // We create the service first to set up the physical files on the disk
+            FileService actualFileService = new FileService();
+            actualFileService.CreateDummyFiles();
+
+            // 1: Weather
+            var weatherMgr = new WeatherManager(new WeatherService());
+            await weatherMgr.RunAsync();
+
+            // 2: Files (Injecting the service that already created the files)
+            var fileMgr = new FileManager(actualFileService);
+            await fileMgr.RunAsync();
+
+            // 3: Emails
+            var emailMgr = new EmailManager(new EmailService());
+            await emailMgr.RunAsync();
+
+            // 4: User Data
+            var userMgr = new UserManager(new UserRepository());
+            await userMgr.RunAsync();
+
+            // 5: Stocks
+            var stockMgr = new StockManager(new StockService());
+            await stockMgr.RunAsync();
+
+            Console.WriteLine("\nAll tasks completed!");
+        }
+    }
+}
 */
