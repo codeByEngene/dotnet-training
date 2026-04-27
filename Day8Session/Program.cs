@@ -32,9 +32,6 @@ Console.WriteLine(string.Join(",", result2));
 // Both give: 5, 6, 7, 8, 9
 */
 
-
-
-
 /*
 // Our data model
 class Product

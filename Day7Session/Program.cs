@@ -1,5 +1,5 @@
 ﻿/*
- 1. Collections
+1. Collections
     i. Arrays
     ii. List
     iii. Dictionary
@@ -235,6 +235,7 @@ class DictionaryExamples
         Console.WriteLine(ages["Alice"]);         // 30
  
         // Safe access with TryGetValue (no exception if missing)
+
         if (ages.TryGetValue("Bob", out int bobAge))
             Console.WriteLine($"Bob is {bobAge}"); // Bob is 25
  
@@ -267,7 +268,7 @@ class DictionaryExamples
         // ── Word frequency counter example ────────────────────
         string sentence = "apple banana apple cherry banana apple";
 
-        //var abc = sentence.Split(' ');
+        var abc = sentence.Split(' ');
         
         Dictionary<string, int> freq = new Dictionary<string, int>();
  
@@ -284,6 +285,7 @@ class DictionaryExamples
     }
 }
 */
+
 
 
 //************************************************************* HashSet ******************************************************//
