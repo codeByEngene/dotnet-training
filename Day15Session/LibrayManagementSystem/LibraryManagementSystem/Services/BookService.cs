@@ -4,7 +4,7 @@ public class BookService : IBookServices
 {
     public void AddBooks(Books books)
     {
-        throw new NotImplementedException();
+        Console.Write("hello");
     }
 
     public void EditBooks(Books books)
