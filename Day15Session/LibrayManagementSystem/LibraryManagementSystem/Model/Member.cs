@@ -1,6 +1,8 @@
+using LibraryManagementSystem.Model.Shared;
+
 namespace LibraryManagementSystem.Model;
 
-public class Member
+public class Member : LmsShared
 {
     public int MemberId { get; set; }
     public string MemberName { get; set; }
@@ -11,8 +13,5 @@ public class Member
     public DateTime ExpirationDate { get; set; }
     public string MembershipType { get; set; }
     public string Status { get; set; }
-    public DateTime CreatedDate { get; set; }
-    public string CreatedBy { get; set; }
-    public DateTime ModifiedDate { get; set; }
-    public string ModifiedBy { get; set; }
+    
 }

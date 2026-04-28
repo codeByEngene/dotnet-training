@@ -1,6 +1,14 @@
+using LibraryManagementSystem.Model.Shared;
+
 namespace LibraryManagementSystem.Model;
 
-public class Book
+/// <summary>
+/// Represents a book in the library management system, including bibliographic details and inventory information.
+/// </summary>
+/// <remarks>The Book class encapsulates key metadata and tracking information for a library book, such as title,
+/// author, publication details, and copy counts. It is typically used to manage and query book records within the
+/// system.</remarks>
+public class Book : LmsShared
 {
     public int BookId { get; set; }
     public string Name { get; set; }
@@ -14,8 +22,4 @@ public class Book
     public string Isbn { get; set; }
     public int NoOfPages { get; set; }
     public string Status { get; set; }
-    public DateTime CreatedDate { get; set; }
-    public string CreatedBy { get; set; }
-    public DateTime ModifiedDate { get; set; }
-    public string ModifiedBy { get; set; }
 }
