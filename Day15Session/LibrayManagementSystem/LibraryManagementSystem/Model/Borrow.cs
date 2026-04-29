@@ -14,5 +14,5 @@ public class Borrow : LmsShared
     public string Status { get; set; }
     public DateTime BookRenewedDate { get; set; }
     public string ReceivedBy { get; set; }
-    public string Remarks { get; set; }   
+    public string Remarks { get; set; }
 }

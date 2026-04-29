@@ -16,3 +16,4 @@ public interface IBookService
     List<Book> ViewAllBooks();
     List<Book> SearchBook(string searchParam);
 }
+

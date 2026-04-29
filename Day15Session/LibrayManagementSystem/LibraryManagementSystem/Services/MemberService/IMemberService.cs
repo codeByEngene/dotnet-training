@@ -10,6 +10,6 @@ namespace LibraryManagementSystem.Services.MemberService
         List<Member> ViewAllMembers();
         List<Member> SearchMember();
         void RenewMembership(Member member);
-        
+
     }
 }

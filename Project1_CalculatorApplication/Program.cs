@@ -25,3 +25,4 @@ using var serviceProvider = services.BuildServiceProvider();
 var app = serviceProvider.GetRequiredService<ICalculatorApp>();
 
 app.Run();
+
