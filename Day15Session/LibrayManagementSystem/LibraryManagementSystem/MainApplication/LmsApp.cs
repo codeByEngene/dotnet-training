@@ -1,5 +1,4 @@
-﻿using LibraryManagementSystem.Learnings.ExplicitImplementation;
-using LibraryManagementSystem.Model;
+﻿using LibraryManagementSystem.Model;
 using LibraryManagementSystem.Services.BookService;
 using LibraryManagementSystem.Services.BorrowService;
 using LibraryManagementSystem.Services.MemberService;
@@ -84,15 +83,72 @@ namespace LibraryManagementSystem.MainApplication
                 var operationMethodChoice = Console.ReadLine();
                 switch (operationMethodChoice)
                 {
+                    case "1":
+                        Console.WriteLine("Enter book name: ");
+                        var bookName = Console.ReadLine();
+                        Console.WriteLine("Enter book author: ");
+                        var bookAuthor = Console.ReadLine();
+                        var newBook = new Book
+                        {
+                            Name = bookName,
+                            Author = bookAuthor,
+                        };
+                        _bookService.AddBooks(newBook);
+                        Console.WriteLine("Book added successfully!");
+                        break;
+                    case "2":
+                        Console.WriteLine("Enter book id for edit: ");
+                        var bookId = Console.ReadLine();
+                        Console.WriteLine("Enter updated book name: ");
+                        var updateBookName = Console.ReadLine();
+                        var updatedBookDetails = new Book
+                        {
+                            BookId = Convert.ToInt32(bookId),
+                            Name = updateBookName
+                        };
+                        _bookService.EditBooks(updatedBookDetails);
+                        Console.Clear();
+                        Console.WriteLine("Book updated successfully!");
+                        Console.WriteLine("/**********************************************/\n\n");
+                        break;
+                    case"3":
+                        Console.WriteLine("Enter book id for delete: ");
+                        var deleteBookId = Console.ReadLine();
+                        _bookService.DeleteBooks(Convert.ToInt32(deleteBookId));
+                        Console.Clear();
+                        Console.WriteLine("Book deleted successfully!");
+                        Console.WriteLine("/**********************************************/\n\n");
+                        break;
+                    case "4":
+                        Console.Clear();
+                        Console.WriteLine("Enter book name for search: ");
+                        var searchBookName = Console.ReadLine();
+                        var searchBookList = _bookService.SearchBook(searchBookName);
+                        if(searchBookList.Count>0)
+                        {
+                            foreach (var book in searchBookList)
+                            {
+                                Console.WriteLine($"Book Id : {book.BookId} | Book Name : {book.Name}");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("No book found with the given name!");
+                        }
+                        Console.WriteLine("/**********************************************/\n\n");
+                        break;
                     case "5":
+                        Console.Clear();
                         var bookList = _bookService.ViewAllBooks();
                         foreach (var book in bookList)
                         {
-                            Console.WriteLine(book.Name);
+                            Console.WriteLine($"Book Id : {book.BookId} | Book Name : {book.Name}");
                         }
+                        Console.WriteLine("/**********************************************/\n\n");
                         break;
                     case "0":
-                        Console.WriteLine("Exiting Book Operations...");
+                        Console.Clear();
+                        Console.WriteLine("Exiting Book Operations...\n\n\n");
                         return;
                     default:
                         Console.WriteLine("Invalid sub menu!");
