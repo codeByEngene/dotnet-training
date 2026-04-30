@@ -27,37 +27,31 @@ namespace LibraryManagementSystem.MainApplication
         public void Run()
         {
             Console.WriteLine("Hello Welcome to the Library Management System!");
-            ShowMenu();
-            Console.WriteLine("Please select a number to proceed: ");
-            var operationChoice = Console.ReadLine();
-            switch(operationChoice)
+            bool exitRequested = false;
+            while (!exitRequested)
             {
-                case "1":
-                    ShowBookMenu();
-                    var operationMethodChoice = Console.ReadLine();
-                    switch(operationMethodChoice)
-                    {
-                        case "5":
-                            var bookList = _bookService.ViewAllBooks();
-                            foreach (var book in bookList)
-                            {
-                                Console.WriteLine(book.Name);
-                            }
-                            break;
-                        default:
-                            Console.WriteLine("Invalid sub menu!"); 
-                            break;
-                    }
-                    break;
-                case "2":
-                    break;
-                case "3":
-                    break;
-                case "4":
-                    break;
-                default:
-                    Console.WriteLine("Invalid choice. Please select a valid option.");
-                    break;
+                ShowMenu();
+                Console.WriteLine("Please select a menu to proceed: ");
+                var operationChoice = Console.ReadLine();
+                switch (operationChoice)
+                {
+                    case "1":
+                        ShowBookOperation();
+                        break;
+                    case "2":
+                        break;
+                    case "3":
+                        break;
+                    case "4":
+                        break;
+                    case "0":
+                        exitRequested = true;
+                        Console.WriteLine("You have exited the system!");
+                        break;
+                    default:
+                        Console.WriteLine("Invalid choice. Please select a valid option.");
+                        break;
+                }
             }
         }
 
@@ -69,19 +63,44 @@ namespace LibraryManagementSystem.MainApplication
             Console.WriteLine("2. Member Operations");
             Console.WriteLine("3. Borrow Operations");
             Console.WriteLine("4. Report Operations");
+            Console.WriteLine("0. Exit");
             Console.WriteLine("/***************************************************/");
 
         }
 
-        private void ShowBookMenu()
+        private void ShowBookOperation()
         {
-            Console.WriteLine("--------SUB MENU-------");
-            Console.WriteLine("1. Add Book");
-            Console.WriteLine("2. Edit Book");
-            Console.WriteLine("3. Delete Book");
-            Console.WriteLine("4. Search Books");
-            Console.WriteLine("5. View All Books");
-            Console.WriteLine("/***************************************************/");
+            while(true)
+            {
+                Console.WriteLine("--------SUB MENU-------");
+                Console.WriteLine("1. Add Book");
+                Console.WriteLine("2. Edit Book");
+                Console.WriteLine("3. Delete Book");
+                Console.WriteLine("4. Search Books");
+                Console.WriteLine("5. View All Books");
+                Console.WriteLine("0. Exit");
+                Console.WriteLine("/***************************************************/");
+                Console.WriteLine("Please select a menu to proceed: ");
+                var operationMethodChoice = Console.ReadLine();
+                switch (operationMethodChoice)
+                {
+                    case "5":
+                        var bookList = _bookService.ViewAllBooks();
+                        foreach (var book in bookList)
+                        {
+                            Console.WriteLine(book.Name);
+                        }
+                        break;
+                    case "0":
+                        Console.WriteLine("Exiting Book Operations...");
+                        return;
+                    default:
+                        Console.WriteLine("Invalid sub menu!");
+                        break;
+                }
+            }
+            
+
         }
     }
 }
