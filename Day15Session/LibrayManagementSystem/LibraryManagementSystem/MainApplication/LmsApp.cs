@@ -1,5 +1,7 @@
-﻿using LibraryManagementSystem.Model;
+﻿using LibraryManagementSystem.Learnings.ExplicitImplementation;
+using LibraryManagementSystem.Model;
 using LibraryManagementSystem.Repository.BookRepository;
+using LibraryManagementSystem.Services;
 using LibraryManagementSystem.Services.BookService;
 using LibraryManagementSystem.Services.BorrowService;
 using LibraryManagementSystem.Services.MemberService;
@@ -14,13 +16,18 @@ namespace LibraryManagementSystem.MainApplication
         private readonly IBorrowService _borrowService;
         private readonly IReportService _reportService;
 
-        public LmsApp(IBookService bookService, IMemberService memberService, IBorrowService borrowService, IReportService reportService)
+        private readonly IHello _hello;
+        private readonly IHelloWorld _helloWorld;
+
+        public LmsApp(IBookService bookService, IMemberService memberService, IBorrowService borrowService, IReportService reportService, IHello hello, IHelloWorld helloWorld)
 
         {
             _bookService = bookService;
             _memberService = memberService;
             _borrowService = borrowService;
             _reportService = reportService;
+            _hello = hello;
+            _helloWorld = helloWorld;
         }
 
         public void Run()
