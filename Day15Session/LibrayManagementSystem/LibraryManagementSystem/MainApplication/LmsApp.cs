@@ -336,6 +336,14 @@ namespace LibraryManagementSystem.MainApplication
                     case "2":
                         break;
                     case "3":
+                        Console.WriteLine("Enter membership id : ");
+                        var membershipIdForFine = Convert.ToInt32(Console.ReadLine());
+                        Console.WriteLine("Enter book id : ");
+                        var bookIdForFine = Convert.ToInt32(Console.ReadLine());
+                        var fineAmount = _borrowService.BorrowFine(bookIdForFine, membershipIdForFine);
+                        Console.Clear();
+                        Console.WriteLine($"Fine amount is {fineAmount}");
+                        Console.WriteLine("/**********************************************/\n\n");
                         break;
                     case "4":
                         break;
