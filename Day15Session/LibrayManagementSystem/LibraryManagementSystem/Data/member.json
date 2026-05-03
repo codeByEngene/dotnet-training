@@ -1,0 +1,17 @@
+[
+  {
+    "MemberId": 1,
+    "MemberName": "Rashik Tuladhar",
+    "Phone": null,
+    "Address": null,
+    "Email": null,
+    "JoinedDate": "0001-01-01T00:00:00",
+    "ExpirationDate": "0001-01-01T00:00:00",
+    "MembershipType": null,
+    "Status": null,
+    "CreatedDate": "0001-01-01T00:00:00",
+    "CreatedBy": null,
+    "ModifiedDate": "0001-01-01T00:00:00",
+    "ModifiedBy": null
+  }
+]

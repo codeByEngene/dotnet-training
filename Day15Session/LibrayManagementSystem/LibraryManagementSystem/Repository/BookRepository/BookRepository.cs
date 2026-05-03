@@ -51,12 +51,17 @@ namespace LibraryManagementSystem.Repository.BookRepository
 
         private List<Book> GetAllBooksForOperation()
         {
+            if (!File.Exists(_connectionString))
+            {
+                return new List<Book>();
+            }
             var bookFromTable = File.ReadAllText(_connectionString);
             var bookDetails = JsonSerializer.Deserialize<List<Book>>(bookFromTable);
             return bookDetails ?? new List<Book>();
         }
     }
 }
+
 
 
 

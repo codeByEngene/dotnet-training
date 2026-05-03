@@ -38,6 +38,7 @@ namespace LibraryManagementSystem.MainApplication
                         ShowBookOperation();
                         break;
                     case "2":
+                        ShowMemberOperation();
                         break;
                     case "3":
                         break;
@@ -155,8 +156,96 @@ namespace LibraryManagementSystem.MainApplication
                         break;
                 }
             }
-            
-
+        }
+        
+        private void ShowMemberOperation()
+        {
+            while(true)
+            {
+                Console.WriteLine("--------SUB MENU-------");
+                Console.WriteLine("1. Add Member");
+                Console.WriteLine("2. Edit Member");
+                Console.WriteLine("3. Delete Member");
+                Console.WriteLine("4. Search Members");
+                Console.WriteLine("5. View All Members");
+                Console.WriteLine("0. Exit");
+                Console.WriteLine("/***************************************************/");
+                Console.WriteLine("Please select a menu to proceed: ");
+                var operationMethodChoice = Console.ReadLine();
+                switch (operationMethodChoice)
+                {
+                    case "1":
+                        Console.WriteLine("Enter member name: ");
+                        var memberName = Console.ReadLine();
+                        Console.WriteLine("Enter member's phone number: ");
+                        var phoneNo = Console.ReadLine();
+                        var newMember = new Member
+                        {
+                            MemberName = memberName,
+                            Phone = phoneNo,
+                        };
+                        _memberService.AddMember(newMember);
+                        Console.WriteLine("Member added successfully!");
+                        break;
+                    case "2":
+                        Console.WriteLine("Enter member id for edit: ");
+                        var memberId = Console.ReadLine();
+                        Console.WriteLine("Enter updated member name: ");
+                        var updateMemberName = Console.ReadLine();
+                        var updatedMemberDetails = new Member
+                        {
+                            MemberId = Convert.ToInt32(memberId),
+                            MemberName = updateMemberName
+                        };
+                        _memberService.EditMember(updatedMemberDetails);
+                        Console.Clear();
+                        Console.WriteLine("Member details updated successfully!");
+                        Console.WriteLine("/**********************************************/\n\n");
+                        break;
+                    case"3":
+                        Console.WriteLine("Enter membership id for delete: ");
+                        var deleteMemberId = Console.ReadLine();
+                        _memberService.DeleteMember(Convert.ToInt32(deleteMemberId));
+                        Console.Clear();
+                        Console.WriteLine("Member deleted successfully!");
+                        Console.WriteLine("/**********************************************/\n\n");
+                        break;
+                    case "4":
+                        Console.Clear();
+                        Console.WriteLine("Enter member name for search: ");
+                        var searchMemberName = Console.ReadLine();
+                        var searchMemberList = _memberService.SearchMembers(searchMemberName);
+                        if(searchMemberList.Count>0)
+                        {
+                            foreach (var member in searchMemberList)
+                            {
+                                Console.WriteLine($"Member Id : {member.MemberId} | Member Name : {member.MemberName}");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("No member found with the given name!");
+                        }
+                        Console.WriteLine("/**********************************************/\n\n");
+                        break;
+                    case "5":
+                        Console.Clear();
+                        var memberList = _memberService.ViewAllMembers();
+                        foreach (var member in memberList)
+                        {
+                            Console.WriteLine($"Member Id : {member.MemberId} | Member Name : {member.MemberName}");
+                        }
+                        Console.WriteLine("/**********************************************/\n\n");
+                        break;
+                    case "0":
+                        Console.Clear();
+                        Console.WriteLine("Exiting Member Operations...\n\n\n");
+                        return;
+                    default:
+                        Console.WriteLine("Invalid sub menu!");
+                        break;
+                }
+            }
         }
     }
 }

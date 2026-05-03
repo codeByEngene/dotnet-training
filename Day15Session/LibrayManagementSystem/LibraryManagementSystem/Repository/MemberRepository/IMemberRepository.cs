@@ -1,8 +1,8 @@
 ﻿using LibraryManagementSystem.Model;
 
-namespace LibraryManagementSystem.Services.MemberService
+namespace LibraryManagementSystem.Repository.MemberRepository
 {
-    public interface IMemberService
+    public interface IMemberRepository
     {
         void AddMember(Member member);
         void EditMember(Member member);
