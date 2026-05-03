@@ -168,6 +168,7 @@ namespace LibraryManagementSystem.MainApplication
                 Console.WriteLine("3. Delete Member");
                 Console.WriteLine("4. Search Members");
                 Console.WriteLine("5. View All Members");
+                Console.WriteLine("6. Renew Membership");
                 Console.WriteLine("0. Exit");
                 Console.WriteLine("/***************************************************/");
                 Console.WriteLine("Please select a menu to proceed: ");
@@ -235,6 +236,18 @@ namespace LibraryManagementSystem.MainApplication
                         {
                             Console.WriteLine($"Member Id : {member.MemberId} | Member Name : {member.MemberName}");
                         }
+                        Console.WriteLine("/**********************************************/\n\n");
+                        break;
+                    case "6":
+                        Console.WriteLine("Enter membership id for membership renew: ");
+                        var renewMemberId = Console.ReadLine();
+                        Member renewMember = new Member
+                        {
+                            MemberId = Convert.ToInt32(renewMemberId)
+                        };
+                        _memberService.RenewMembership(renewMember);
+                        Console.Clear();
+                        Console.WriteLine("Membership renewed successfully!");
                         Console.WriteLine("/**********************************************/\n\n");
                         break;
                     case "0":
