@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace LibraryManagementSystem.Model.Report
+﻿namespace LibraryManagementSystem.Model.Report
 {
     public class BorrowedReport
     {

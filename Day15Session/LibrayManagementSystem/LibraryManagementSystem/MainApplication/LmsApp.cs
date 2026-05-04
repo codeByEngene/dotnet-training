@@ -1,4 +1,5 @@
 ﻿using LibraryManagementSystem.Model;
+using LibraryManagementSystem.Model.Report;
 using LibraryManagementSystem.Services.BookService;
 using LibraryManagementSystem.Services.BorrowService;
 using LibraryManagementSystem.Services.MemberService;
@@ -44,6 +45,7 @@ namespace LibraryManagementSystem.MainApplication
                         ShowBorrowOperation();
                         break;
                     case "4":
+                        ShowReportOperation();
                         break;
                     case "0":
                         exitRequested = true;
@@ -382,6 +384,45 @@ namespace LibraryManagementSystem.MainApplication
                         }
                         Console.ResetColor();
                         Console.WriteLine("/**********************************************/\n\n");
+                        break;
+                    case "0":
+                        Console.Clear();
+                        Console.WriteLine("Exiting Book Operations...\n\n\n");
+                        return;
+                    default:
+                        Console.WriteLine("Invalid sub menu!");
+                        break;
+                }
+            }
+        }
+
+        private void ShowReportOperation()
+        {
+            while (true)
+            {
+                Console.WriteLine("--------SUB MENU-------");
+                Console.WriteLine("1. Book Borrowed Details");
+                Console.WriteLine("0. Exit");
+                Console.WriteLine("/***************************************************/");
+                Console.WriteLine("Please select a menu to proceed: ");
+                var operationMethodChoice = Console.ReadLine();
+                switch (operationMethodChoice)
+                {
+                    case "1":
+                        var reportFilter = new BorrowedReportFilter();
+                        Console.WriteLine("Enter member id for report filter (optional): ");
+                        var memberIdInput = Console.ReadLine();
+                        if(!string.IsNullOrEmpty(memberIdInput))
+                        {
+                            reportFilter.MemberId = Convert.ToInt32(memberIdInput);
+                        }
+                        var bookBorrowedDetails = _reportService.GetCurrentlyBorrowedBooksReport(reportFilter);
+                        Console.Clear();
+                        foreach(var borrowDetail in bookBorrowedDetails)
+                        {
+                            Console.WriteLine($"Book Name : {borrowDetail.BookId} | Member Name : {borrowDetail.MemberId} | Borrow Date : {borrowDetail.CreatedDate} | Due Date : {borrowDetail.DueDate}");
+                        }
+                        Console.WriteLine("/***************************************************/");
                         break;
                     case "0":
                         Console.Clear();

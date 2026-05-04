@@ -1,10 +1,11 @@
-﻿using LibraryManagementSystem.Model.Report;
+﻿using LibraryManagementSystem.Model;
+using LibraryManagementSystem.Model.Report;
 
 namespace LibraryManagementSystem.Services.ReportService
 {
     public interface IReportService
     {
-        List<BorrowedReport> GetCurrentlyBorrowedBooksReport(BorrowedReportFilter borrowedReportFilter);
+        List<Borrow> GetCurrentlyBorrowedBooksReport(BorrowedReportFilter borrowedReportFilter);
         List<DueDateReport> GetOverDueBooksReport(DateOnly currentDate);
         List<MemberHistoryReport> MemberHistoryReport(int memberId);
     }

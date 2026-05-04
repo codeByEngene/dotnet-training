@@ -49,5 +49,22 @@
     "CreatedBy": "admin",
     "ModifiedDate": "2026-05-04T07:43:46.7768148+05:45",
     "ModifiedBy": "admin"
+  },
+  {
+    "BookId": 3,
+    "RecordId": 4,
+    "MemberId": 2,
+    "IssuedDate": "2026-05-04T08:05:24.756143+05:45",
+    "DueDate": "2026-05-19T08:05:24.7561453+05:45",
+    "LateFine": 0,
+    "ReturnedDate": "0001-01-01T00:00:00",
+    "Status": "Borrowed",
+    "BookRenewedDate": "0001-01-01T00:00:00",
+    "ReceivedBy": null,
+    "Remarks": null,
+    "CreatedDate": "2026-05-04T08:05:24.7562585+05:45",
+    "CreatedBy": "admin",
+    "ModifiedDate": "0001-01-01T00:00:00",
+    "ModifiedBy": null
   }
 ]
