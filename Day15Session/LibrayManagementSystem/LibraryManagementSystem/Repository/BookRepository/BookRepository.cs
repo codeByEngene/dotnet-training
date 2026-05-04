@@ -95,21 +95,3 @@ namespace LibraryManagementSystem.Repository.BookRepository
         }
     }
 }
-
-
-
-
-
-
-//
-// var result = (
-//     from c in customers
-//     join o in orders on c.Id equals o.CustomerId
-//     join p in payments on o.Id equals p.OrderId
-//     select new
-//     {
-//         c.Name,
-//         o.Id,
-//         p.Amount
-//     }
-// ).ToList();

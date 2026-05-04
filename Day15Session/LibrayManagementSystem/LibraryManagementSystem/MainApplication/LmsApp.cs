@@ -4,6 +4,7 @@ using LibraryManagementSystem.Services.BookService;
 using LibraryManagementSystem.Services.BorrowService;
 using LibraryManagementSystem.Services.MemberService;
 using LibraryManagementSystem.Services.ReportService;
+using System.Text.Json;
 
 namespace LibraryManagementSystem.MainApplication
 {
@@ -71,7 +72,7 @@ namespace LibraryManagementSystem.MainApplication
         }
         private void ShowBookOperation()
         {
-            while(true)
+            while (true)
             {
                 Console.WriteLine("--------SUB MENU-------");
                 Console.WriteLine("1. Add Book");
@@ -123,12 +124,12 @@ namespace LibraryManagementSystem.MainApplication
                         Console.ResetColor();
                         Console.WriteLine("/**********************************************/\n\n");
                         break;
-                    case"3":
+                    case "3":
                         Console.WriteLine("Enter book id for delete: ");
                         var deleteBookId = Console.ReadLine();
                         var hasBookBeenDeleted = _bookService.DeleteBooks(Convert.ToInt32(deleteBookId));
                         Console.Clear();
-                        if(hasBookBeenDeleted)
+                        if (hasBookBeenDeleted)
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
                             Console.WriteLine("Book deleted successfully!");
@@ -146,7 +147,7 @@ namespace LibraryManagementSystem.MainApplication
                         Console.WriteLine("Enter book name for search: ");
                         var searchBookName = Console.ReadLine();
                         var searchBookList = _bookService.SearchBook(searchBookName);
-                        if(searchBookList.Count>0)
+                        if (searchBookList.Count > 0)
                         {
                             foreach (var book in searchBookList)
                             {
@@ -180,7 +181,7 @@ namespace LibraryManagementSystem.MainApplication
         }
         private void ShowMemberOperation()
         {
-            while(true)
+            while (true)
             {
                 Console.WriteLine("--------SUB MENU-------");
                 Console.WriteLine("1. Add Member");
@@ -224,7 +225,7 @@ namespace LibraryManagementSystem.MainApplication
                         };
                         var hasMemberBeenEdited = _memberService.EditMember(updatedMemberDetails);
                         Console.Clear();
-                        if(hasMemberBeenEdited)
+                        if (hasMemberBeenEdited)
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
                             Console.WriteLine("Member details updated successfully!");
@@ -237,7 +238,7 @@ namespace LibraryManagementSystem.MainApplication
                         Console.ResetColor();
                         Console.WriteLine("/**********************************************/\n\n");
                         break;
-                    case"3":
+                    case "3":
                         Console.WriteLine("Enter membership id for delete: ");
                         var deleteMemberId = Console.ReadLine();
                         var hasMemberBeenDeleted = _memberService.DeleteMember(Convert.ToInt32(deleteMemberId));
@@ -260,7 +261,7 @@ namespace LibraryManagementSystem.MainApplication
                         Console.WriteLine("Enter member name for search: ");
                         var searchMemberName = Console.ReadLine();
                         var searchMemberList = _memberService.SearchMembers(searchMemberName);
-                        if(searchMemberList.Count>0)
+                        if (searchMemberList.Count > 0)
                         {
                             foreach (var member in searchMemberList)
                             {
@@ -372,7 +373,7 @@ namespace LibraryManagementSystem.MainApplication
                         var recordId = Convert.ToInt32(Console.ReadLine());
                         var bookReturnResponse = _borrowService.ReturnBook(recordId);
                         Console.Clear();
-                        if(bookReturnResponse.isSuccess)
+                        if (bookReturnResponse.isSuccess)
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
                             Console.WriteLine(bookReturnResponse.message);
@@ -412,16 +413,14 @@ namespace LibraryManagementSystem.MainApplication
                         var reportFilter = new BorrowedReportFilter();
                         Console.WriteLine("Enter member id for report filter (optional): ");
                         var memberIdInput = Console.ReadLine();
-                        if(!string.IsNullOrEmpty(memberIdInput))
+                        if (!string.IsNullOrEmpty(memberIdInput))
                         {
                             reportFilter.MemberId = Convert.ToInt32(memberIdInput);
                         }
-                        var bookBorrowedDetails = _reportService.GetCurrentlyBorrowedBooksReport(reportFilter);
+                        var bookBorrowedDetails = _reportService.GetBorrowedBooksReport(reportFilter);
                         Console.Clear();
-                        foreach(var borrowDetail in bookBorrowedDetails)
-                        {
-                            Console.WriteLine($"Book Name : {borrowDetail.BookId} | Member Name : {borrowDetail.MemberId} | Borrow Date : {borrowDetail.CreatedDate} | Due Date : {borrowDetail.DueDate}");
-                        }
+
+                        Console.WriteLine(JsonSerializer.Serialize(bookBorrowedDetails));
                         Console.WriteLine("/***************************************************/");
                         break;
                     case "0":

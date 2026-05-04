@@ -11,12 +11,13 @@
 
     public class BorrowedBookDetail
     {
+        public int BookId { get; set; }
         public string BookName { get; set; }
         public string BookIsbn { get; set; }
-        public DateTime IssuedDate { get; set; }
-        public DateTime DueDate { get; set; }
-        public int DueDays { get; set; }
-        public double DueFine { get; set; }
+        //public DateTime IssuedDate { get; set; }
+        //public DateTime DueDate { get; set; }
+        //public int DueDays { get; set; }
+        //public double DueFine { get; set; }
     }
 }
 

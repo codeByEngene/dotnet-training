@@ -28,6 +28,61 @@ namespace LibraryManagementSystem.Services.ReportService
             return borrowList;
         }
 
+        public List<BorrowedReport> GetBorrowedBooksReport(BorrowedReportFilter borrowedReportFilter)
+        {
+            List<BorrowedReport> borrowedReports = new List<BorrowedReport>();
+            var borrowedBooks = _borrowRepository.ViewAllBorrowLists();
+            var memberDetails = _memberRepository.ViewAllMembers();
+            var bookDetails = _bookRepository.ViewAllBooks();
+            var response = (
+                    from b in borrowedBooks
+                    join m in memberDetails on b.MemberId equals m.MemberId
+                    select new
+                    {
+                        m.MemberId,
+                        m.MemberName,
+                        m.MembershipType,
+                        m.Phone
+                    }
+                ).ToList();
+
+            foreach(var details in response.Distinct())
+            {
+                List<BorrowedBookDetail> borrowedBookDetails = new List<BorrowedBookDetail>();
+                var memberWiseBookDetails = borrowedBooks.Where(x => x.MemberId == details.MemberId).Select(x=>x.BookId).ToList();
+
+                //var bookName = (
+                //   from b in bookDetails
+                //   join bb in borrowedBooks on b.BookId equals bb.BookId
+                //   select new
+                //   {
+                //       bb.BookId,
+                //       b.Name
+                //   }).ToList();
+
+                foreach (var bookId in memberWiseBookDetails)
+                {
+                    borrowedBookDetails.Add(new BorrowedBookDetail
+                    {
+                        BookId = bookId,
+                        BookName = bookDetails.Where(x => x.BookId == bookId).Select(x => x.Name).FirstOrDefault(),
+                        BookIsbn = bookDetails.Where(x => x.BookId == bookId).Select(x => x.Isbn).FirstOrDefault()
+                    });
+                }
+
+
+                BorrowedReport report = new BorrowedReport
+                {
+                    MemberName = details.MemberName,
+                    MembershipType = details.MembershipType,
+                    MemberPhoneNumber = details.Phone,
+                    BorrowedBookDetails = borrowedBookDetails
+                };
+                borrowedReports.Add(report);
+            }
+            return borrowedReports;
+        }
+
         public List<DueDateReport> GetOverDueBooksReport(DateOnly currentDate)
         {
             throw new NotImplementedException();
